@@ -4,10 +4,13 @@ import string
 search = input('Enter the topic :- ')
 search = search.replace(' ','_')
 
-res = requests.get(f'https://en.wikipedia.org/wiki/{search}')
-res.raise_for_status()
+try :
+    res = requests.get(f'https://en.wikipedia.org/wiki/{search}')
+    res.raise_for_status()
+except:
+    print("No such topic found")
 
-print('===========\n')
+# print('===========\n')
 text = re.findall('<p>(.*)?[.]',res.text)
 words = {}
 
@@ -40,10 +43,8 @@ for item in text:
     for word in data.split():
         words[word] = words.get(word,0) + 1
 
-    print(data)
-    print('==================' * 3)
+    print("->", data)
+    print()
 
-print('=================='*3)
-print('=================='*3)
-print('=================='*3)
-print(words)
+print()
+# print(words)
