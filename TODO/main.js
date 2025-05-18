@@ -5,6 +5,7 @@ const zod = require('zod');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const passKey = '12345678';
+app.use(express.static(__dirname));
 mongoose.connect('mongodb+srv://newayush:newayush123@cluster0.nr101vh.mongodb.net/TODO?retryWrites=true&w=majority');
 
 app.use(express.json());
@@ -139,6 +140,10 @@ app.get('/todos', authMiddleware, async (req, res) => {
   // console.log(data.todos);
   return res.json(data.todos);
 });
+
+app.get('/login', (req, res) => {
+  res.redirect('loginPage.html');
+})
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
