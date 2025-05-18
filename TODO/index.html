@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple TODO app</title>
+    <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    #navbar {
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;               
+      background: #fff;          
+      border-bottom: 2px solid #333;
+      display: flex;
+      align-items: center;        
+      justify-content: space-between;
+      padding: 0 24px;            
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      z-index: 1000;             
+    }
+
+    #navbar a {
+      text-decoration: none;
+      color: #0077cc;
+      font-weight: bold;
+    }
+    #navbar a:hover {
+      color: #005fa3;
+    }
+  </style>
+</head>
+<body>
+    <div id="navbar">
+        <h1 style="margin:0; font-size:1.5rem;">TODO APP</h1>
+        <a href="loginPage.html">Log out</a>
+    </div>
+    <div style="margin: 10px; padding: 5px; border: 3px solid red; border-radius: 6px; background-color: antiquewhite;">
+        <div style="display:flex; justify-content: space-between; margin-bottom: 10px;">
+            <p style="font-size: 20px; font-weight: bold;">TODO ID</p>
+            <input type="text" id="todo_id" placeholder="123-756-02" style="width: 300px; border: 2px solid;
+             border-radius: 5px; padding: 5px; font-size: 20px;">
+        </div>
+
+        <div style="display:flex; justify-content: space-between; margin-bottom: 10px;">
+            <p style="font-size: 20px; font-weight: bold;">TITLE</p>
+            <input type="text" id="todo_title" placeholder="TODO title" style="width: 300px; border: 2px solid;
+             border-radius: 5px; padding: 5px; font-size: 20px;">
+        </div>
+
+        <div style="display:flex; justify-content: space-between; margin-bottom: 10px;">
+            <p style="font-size: 20px; font-weight: bold;">DESCRIPTION</p>
+            <input type="text" id="todo_description" placeholder="TODO description" style="width: 300px; border: 2px solid;
+             border-radius: 5px; padding: 5px; font-size: 20px;">
+        </div>
+         
+        <div style="display: flex; justify-content: center;">
+            <button onclick="addData()" id="submit" style="padding: 6px; margin: 15px;
+             border: 1px solid rgb(198, 196, 255); border-radius: 5px;
+              background-color: rgb(145, 222, 240); font-size: 20px;">Submit</button>
+        </div>
+    </div>
+    <div id="container">
+        <h2 style="text-align: center;">TODO List</h2>
+        
+    </div>
+    <script>
+
+        async function markDone(todo_id){
+            const par = document.getElementById(todo_id);
+            par.querySelector('.done-btn').innerHTML = '<b>Done<b>';
+            par.querySelector('.done-btn').style.backgroundColor = 'lightgreen';
+            par.querySelector('.done-btn').disabled = true;
+            let token = localStorage.getItem('token');
+            let payload = {todo_id};
+            let res = await fetch('http://localhost:3000/done', {
+                method : 'PUT',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                'id' : todo_id
+                },
+            });
+        }
+
+        async function deletebtn(todo_id){
+            const container = document.getElementById('container');
+            const todo = document.getElementById(todo_id);
+            container.removeChild(todo);
+            let token = localStorage.getItem('token');
+            let res = await fetch('http://localhost:3000/delete', {
+                method : 'DELETE',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                'id' : todo_id
+                },
+            });
+        }
+        function createChild(todo_id, todo_title, todo_description){
+            const todo = document.createElement('div');
+            todo.style.border = '2px solid black';
+            todo.style.borderRadius = '10px';
+            // todo.style.padding = '10px';
+            todo.style.margin = '10px';
+            todo.style.backgroundColor = 'rgb(255, 255, 255)';
+            todo.setAttribute('id', todo_id);
+            todo.innerHTML = `
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="padding: 10px;">
+                        <p><strong>ID:</strong> ${todo_id}</p>
+                        <p><strong>Title:</strong> ${todo_title}</p>
+                        <p><strong>Description:</strong> ${todo_description}</p>
+                    </div>
+
+                    <div style="border: 2px solid black; display: flex; flex-direction: column;;
+                    justify-content: center; align-items: center;
+                    border-bottom-right-radius: 10px; border-top-right-radius: 10px; width: 300px;">
+                        <div style="margin: 5px;">
+                            <button class="done-btn" onclick="markDone(${todo_id})" style="padding: 10px; font-size: 20px; border: 2px solid bisque;
+                            border-radius: 10px; background-color: bisque;">
+                                Mark as Done
+                            </button>
+                        </div>
+                        <div style="margin: 5px;">
+                            <button class="delete-btn" onclick="deletebtn(${todo_id})" style="padding: 10px; font-size: 20px; border: 2px solid bisque;
+                            border-radius: 10px; background-color: bisque;">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return todo;
+        }
+        async function addData(){
+            const todo_id = document.getElementById('todo_id').value;
+            const todo_title = document.getElementById('todo_title').value;
+            const todo_description = document.getElementById('todo_description').value;
+            const container = document.getElementById('container');
+            
+            if(todo_id == '' || todo_title == '' || todo_description == '') return;
+
+            const todo = createChild(todo_id, todo_title, todo_description);
+
+            container.appendChild(todo);
+            let Status = false;
+            let content = {todo_id, todo_title, todo_description, Status};
+            let token = localStorage.getItem('token');
+
+            const res = await fetch('http://localhost:3000/add', {
+                method : 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(content)
+            });
+            document.getElementById('todo_id').value = '';
+            document.getElementById('todo_title').value = '';
+            document.getElementById('todo_description').value = '';
+        }
+
+        async function getData(){
+            let token = localStorage.getItem('token');
+            const container = document.getElementById('container');
+            container.innerHTML = "";
+            let res = await fetch('http://localhost:3000/todos', {
+                method : 'GET',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+                },
+            });
+            // console.log(res);
+            res = await res.json(); 
+            // console.log(res);
+            let len = res.length;
+            for(let i = 0; i < len; i++){
+                todo = res[i];
+                // console.log(todo);
+                let newElement = createChild(todo.todo_id, todo.todo_title, todo.todo_description);
+                container.appendChild(newElement);
+                if(todo.Status == true){
+                    markDone(todo.todo_id);
+                }
+            }
+        }
+        // window.setInterval(getData, 2000);
+        getData();
+    </script>
+</body>
+</html>
