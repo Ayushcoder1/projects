@@ -58,6 +58,12 @@
             <input type="text" id="todo_description" placeholder="TODO description" style="width: 300px; border: 2px solid;
              border-radius: 5px; padding: 5px; font-size: 20px;">
         </div>
+
+        <div style="display:flex; justify-content: space-between; margin-bottom: 10px;">
+            <p style="font-size: 20px; font-weight: bold;">DEADLINE</p>
+            <input type="date" id="deadline" placeholder="YYYY-MM-DD" style="width: 300px; border: 2px solid;
+             border-radius: 5px; padding: 5px; font-size: 20px;">
+        </div>
          
         <div style="display: flex; justify-content: center;">
             <button onclick="addData()" id="submit" style="padding: 6px; margin: 15px;
@@ -71,6 +77,7 @@
     </div>
     <script>
 
+        let oldState = [];
         async function markDone(todo_id){
             const par = document.getElementById(todo_id);
             par.querySelector('.done-btn').innerHTML = '<b>Done<b>';
@@ -102,33 +109,32 @@
                 },
             });
         }
-        function createChild(todo_id, todo_title, todo_description){
+        function createChild(todo_id, todo_title, todo_description, deadline){
             const todo = document.createElement('div');
             todo.style.border = '2px solid black';
             todo.style.borderRadius = '10px';
-            // todo.style.padding = '10px';
             todo.style.margin = '10px';
             todo.style.backgroundColor = 'rgb(255, 255, 255)';
             todo.setAttribute('id', todo_id);
             todo.innerHTML = `
                 <div style="display: flex; justify-content: space-between;">
                     <div style="padding: 10px;">
-                        <p><strong>ID:</strong> ${todo_id}</p>
-                        <p><strong>Title:</strong> ${todo_title}</p>
-                        <p><strong>Description:</strong> ${todo_description}</p>
+                        <p class="deadline"><strong>Deadline:</strong> ${deadline}</p>
+                        <p class="title"><strong>Title:</strong> ${todo_title}</p>
+                        <p class="description"><strong>Description:</strong> ${todo_description}</p>
                     </div>
 
                     <div style="border: 2px solid black; display: flex; flex-direction: column;;
                     justify-content: center; align-items: center;
                     border-bottom-right-radius: 10px; border-top-right-radius: 10px; width: 300px;">
                         <div style="margin: 5px;">
-                            <button class="done-btn" onclick="markDone(${todo_id})" style="padding: 10px; font-size: 20px; border: 2px solid bisque;
+                            <button class="done-btn" onclick="markDone('${todo_id}')" style="padding: 10px; font-size: 20px; border: 2px solid bisque;
                             border-radius: 10px; background-color: bisque;">
                                 Mark as Done
                             </button>
                         </div>
                         <div style="margin: 5px;">
-                            <button class="delete-btn" onclick="deletebtn(${todo_id})" style="padding: 10px; font-size: 20px; border: 2px solid bisque;
+                            <button class="delete-btn" onclick="deletebtn('${todo_id}')" style="padding: 10px; font-size: 20px; border: 2px solid bisque;
                             border-radius: 10px; background-color: bisque;">
                                 Delete
                             </button>
@@ -142,15 +148,14 @@
             const todo_id = document.getElementById('todo_id').value;
             const todo_title = document.getElementById('todo_title').value;
             const todo_description = document.getElementById('todo_description').value;
+            let deadline = document.getElementById('deadline').value;
             const container = document.getElementById('container');
             
             if(todo_id == '' || todo_title == '' || todo_description == '') return;
 
-            const todo = createChild(todo_id, todo_title, todo_description);
-
-            container.appendChild(todo);
+            deadline = new Date(deadline).getTime();
             let Status = false;
-            let content = {todo_id, todo_title, todo_description, Status};
+            let content = {todo_id, todo_title, todo_description, Status, deadline};
             let token = localStorage.getItem('token');
 
             const res = await fetch('http://localhost:3000/add', {
@@ -161,6 +166,7 @@
                 },
                 body: JSON.stringify(content)
             });
+            if(res.status == 409) return;
             document.getElementById('todo_id').value = '';
             document.getElementById('todo_title').value = '';
             document.getElementById('todo_description').value = '';
@@ -169,7 +175,7 @@
         async function getData(){
             let token = localStorage.getItem('token');
             const container = document.getElementById('container');
-            container.innerHTML = "";
+            let newState = [];
             let res = await fetch('http://localhost:3000/todos', {
                 method : 'GET',
                 headers: {
@@ -177,22 +183,53 @@
                 'Authorization': 'Bearer ' + token
                 },
             });
-            // console.log(res);
             res = await res.json(); 
-            // console.log(res);
             let len = res.length;
+            let newID = [];
             for(let i = 0; i < len; i++){
                 todo = res[i];
-                // console.log(todo);
-                let newElement = createChild(todo.todo_id, todo.todo_title, todo.todo_description);
+                newState.push(todo);
+                newID.push(todo.todo_id);
+            }
+            let deleted = [];
+            let added = [];
+            let updated = [];
+            
+            for(let i = 0; i < newState.length; i++){
+                if(oldState.includes(newID[i])) updated.push(newState[i]);
+                else added.push(newState[i]);
+            }
+
+            for(let i = 0; i < oldState.length; i++){
+                if(newID.includes(oldState[i])) continue;
+                else deleted.push(oldState[i]);
+            }
+            for(let i of deleted){
+                deletebtn(i);
+            }
+            for(let i of added){
+                let todo = i;
+                let tmp = new Date(todo.deadline).toLocaleDateString('en-CA');
+                let newElement = createChild(todo.todo_id, todo.todo_title, todo.todo_description, tmp);
                 container.appendChild(newElement);
                 if(todo.Status == true){
                     markDone(todo.todo_id);
                 }
             }
+            for(let i of updated){
+                let todo = i;
+                let tmp = new Date(todo.deadline).toLocaleDateString('en-CA');
+                let par = document.getElementById(todo.todo_id);
+                par.querySelector('.deadline').value = tmp;
+                par.querySelector('.title').value = todo.todo_title;
+                par.querySelector('.description').value = todo.todo_description;
+                if(todo.status == true){
+                    markDone(todo.todo_id);
+                }
+            }
+            oldState = newID.slice();
         }
-        // window.setInterval(getData, 2000);
-        getData();
+        window.setInterval(getData, 1000);
     </script>
 </body>
 </html>
