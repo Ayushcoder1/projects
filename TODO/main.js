@@ -33,6 +33,10 @@ const TodoSchema = new mongoose.Schema({
     type : Boolean,
     required : true,
     default : false
+  },
+  deadline : {
+    type : Number,
+    required : true
   }
 }, { _id: false });
 
@@ -103,13 +107,21 @@ app.post('/add', authMiddleware, async (req, res) => {
     const todo = req.body;
     const username = req.user;
     
+    const lookup = await TODO.findOne({
+      username,
+      'todos.todo_id': todo.todo_id
+    });
+
+    if(lookup){
+      return res.sendStatus(409);
+    }
     await TODO.updateOne(
       { username : username},
       {$push: { todos: todo } },
       { upsert: true }
     );
 
-    return res.status(200);
+    return res.sendStatus(200);
 });
 
 app.delete('/delete', authMiddleware, async (req, res) => {
