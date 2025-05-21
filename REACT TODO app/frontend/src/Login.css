@@ -1,0 +1,65 @@
+#login-form div{
+    padding: 20px;
+    padding-bottom: 0px;
+}
+
+#pic{
+    width: 150px;
+    height: 150px;
+}
+
+#start{
+    display: grid;
+    justify-content: center;
+}
+
+#start p{
+    font-size: 20px;
+}
+
+#outer_login{
+    display: grid;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#login-form p{
+    margin: 0px;
+    margin-bottom: 5px;
+    font-size: 17px;
+}
+
+#login-form input{
+    height: 20px;
+    width: 250px;
+    border-radius: 5px;
+    font-size: 17px;
+}
+
+#login-form{
+    box-shadow: 1px 1px 5px;
+    display: grid;
+    justify-content: center;
+    border-radius: 5px;
+    background-color: aliceblue;
+    width: 350px;
+}
+
+#login-form button{
+    width: 250px;
+    height: 25px;
+    font-size: 20px;
+    margin-bottom: 15px;
+    background-color: rgb(19, 189, 19);
+    border-radius: 5px;
+    color: white;
+}
+#redirect{
+    box-shadow: 1px 1px 5px;
+    border-radius: 5px;
+    margin-top: 20px;
+    background-color: aliceblue;
+    width: 350px;
+    display: flex;
+    justify-content: center;
+}
