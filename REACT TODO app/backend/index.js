@@ -140,7 +140,7 @@ app.delete('/delete', authMiddleware, async (req, res) => {
     {$pull : {todos : {id : id}}}
   );
 
-  return res.status(200);
+  return res.sendStatus(200);
 });
 
 app.put('/done', authMiddleware, async (req, res) => {
@@ -151,7 +151,7 @@ app.put('/done', authMiddleware, async (req, res) => {
     {$set : {"todos.$.Status" : true}}
   );
 
-  return res.status(200);
+  return res.sendStatus(200);
 });
 
 app.get('/todos', authMiddleware, async (req, res) => {
