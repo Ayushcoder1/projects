@@ -1,8 +1,4 @@
 .items{
-    background-color: aliceblue;
-    box-shadow: 1px 1px 5px;
-    padding: 5px;
-    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
 }
@@ -11,13 +7,6 @@
     padding-left: 10px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 18px;
-}
-
-.todo-form{
-    background-color: aliceblue;
-    box-shadow: 1px 1px 5px;
-    padding: 5px;
-    margin-bottom: 10px;
 }
 
 #outer_app{
@@ -98,4 +87,13 @@
     border-left: 2px solid black;
     padding: 10px;
     padding-left: 30px;
+}
+
+.card {
+  background-color: aliceblue;
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px;
+  padding: 5px;
+  margin-bottom: 10px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }

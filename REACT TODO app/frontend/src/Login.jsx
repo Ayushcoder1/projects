@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import todoImg from './assets/todo.png';
 import './Login.css'
+import Card from './components/Card'
 
 function Login(){
     const [username, setUsername] = useState('');
@@ -33,7 +34,8 @@ function Login(){
                     <p>Sign in to TODO App</p>
                 </div>
             </div>
-            <div id='login-form'>
+            <Card>
+                <div id='login-form'>
                 <div>
                     <p>Username or email address</p>
                     <input type="text" value={username} onChange={(event) => setUsername(event.target.value)}/>
@@ -45,10 +47,13 @@ function Login(){
                 <div>
                     <button onClick={session}>Sign in</button>
                 </div>
-            </div>
-            <div id='redirect'>
+                </div>
+            </Card>
+            <Card>
+                <div id='redirect'>
                 <p>New to TODO? <a href="/signup">Create an account</a></p>
-            </div>
+                </div>
+            </Card>
         </div>
         </>
     )

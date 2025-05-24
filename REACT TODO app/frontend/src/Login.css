@@ -32,16 +32,12 @@
 #login-form input{
     height: 20px;
     width: 250px;
-    border-radius: 5px;
     font-size: 17px;
 }
 
 #login-form{
-    box-shadow: 1px 1px 5px;
     display: grid;
     justify-content: center;
-    border-radius: 5px;
-    background-color: aliceblue;
     width: 350px;
 }
 
@@ -55,10 +51,6 @@
     color: white;
 }
 #redirect{
-    box-shadow: 1px 1px 5px;
-    border-radius: 5px;
-    margin-top: 20px;
-    background-color: aliceblue;
     width: 350px;
     display: flex;
     justify-content: center;
