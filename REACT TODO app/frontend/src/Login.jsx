@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import todoImg from './assets/todo.png';
 import './Login.css'
 import Card from './components/Card'
+import { useNavigate, Link } from 'react-router-dom';
 
 function Login(){
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('')
+    const navigate = useNavigate();
 
     const session = async function(){
         // console.log(username, password);
@@ -19,7 +21,8 @@ function Login(){
         // console.log(data.token);
         if(res.status == 200){
             localStorage.setItem('token', data.token);
-            window.location.replace('/todos');
+            // window.location.replace('/todos');
+            navigate('/todos');
         }
     }
 
@@ -51,7 +54,7 @@ function Login(){
             </Card>
             <Card>
                 <div id='redirect'>
-                <p>New to TODO? <a href="/signup">Create an account</a></p>
+                <p>New to TODO? <Link to='/signup'>Create an account</Link></p>
                 </div>
             </Card>
         </div>

@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import todoImg from './assets/todo.png';
 import Card from './components/Card'
+import { useNavigate, Link } from 'react-router-dom';
 
 function Signup(){
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('')
+    const navigate = useNavigate();
 
     const session = async function(){
         // console.log(username, password);
@@ -18,7 +20,8 @@ function Signup(){
         const data = await res.json();
         // console.log(data.token);
         if(res.status == 200){
-            window.location.replace('/login');
+            // window.location.replace('/login');
+            navigate('/');
         }
     }
 
@@ -54,7 +57,7 @@ function Signup(){
             </Card>
             <Card>
                 <div id='redirect'>
-                <p>Already have an account? <a href="/">Log in</a></p>
+                <p>Already have an account? <Link to="/">Log in</Link></p>
                 </div>
             </Card>
         </div>

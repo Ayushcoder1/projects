@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import TODO from './components/TODO'
 import Form from './components/Form'
 import Card from './components/Card'
+import { Link } from 'react-router-dom';
 
 var token = localStorage.getItem('token');
 
@@ -76,7 +77,7 @@ function Navbar(){
   return (
     <nav className='navbar'>
       <h1>TODO APP</h1>
-      <a href="\">Log out</a>
+      <Link to="/">Log out</Link>
     </nav>
   )
 }
