@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Delete from '../assets/delete.png'
+import Edit from '../assets/edit.png'
 
 function TODO(param){
     const [title, setTitle] = useState('');
@@ -21,6 +22,7 @@ function TODO(param){
     <div className='icons'>
         <input type="checkbox" onChange={param.onToggle} disabled={param.todo.Status}/>
         <img src={Delete} alt="" id='delete' onClick={param.onDelete}/>
+        <img src={Edit} alt="" id="edit" onClick={param.onEdit}/>
     </div>
   </div>)
 }

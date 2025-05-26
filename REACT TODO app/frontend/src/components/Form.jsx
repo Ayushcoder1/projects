@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useRef } from 'react';
 
 function Form(param){
     const token = param.token;
-    let [id, setId] = useState('');
-    let [title, setTitle] = useState('');
-    let [description, setDescription] = useState('');
-    let [deadline, setDeadline] = useState('');
+    const idRef = useRef();
+    const titleRef = useRef();
+    const descriptionRef = useRef();
+    const deadlineRef = useRef();
 
     async function addTodo(event){
         if(token === null){
@@ -14,7 +14,10 @@ function Form(param){
         }
         event.preventDefault();
         let Status = false;
-        deadline = new Date(deadline).getTime();
+        const id = idRef.current.value;
+        const title = titleRef.current.value;
+        const description = descriptionRef.current.value;
+        const deadline = new Date(deadlineRef.current.value).getTime();
         const content = {id, title, description, Status, deadline};
         const res = await fetch('http://localhost:3000/add', {
           method : 'POST',
@@ -28,40 +31,36 @@ function Form(param){
           console.log('A todo with similar ID already exits, try again.');
           return;
         }
-        setId('');
-        setTitle('');
-        setDescription('');
-        setDeadline('');
+        idRef.current.value = '';
+        titleRef.current.value = '';
+        descriptionRef.current.value = '';
+        deadlineRef.current.value = '';
         param.get_data();
     }
 
     return (
-        <>
-        <form onSubmit={addTodo} className='todo-form'>
-        <div>
-          <p>TODO ID</p>
-          <input type='text' placeholder='923/231' value={id} onChange={(event) => setId(event.target.value)}/>
-        </div>
-        <div>
-          <p>Title</p>
-          <input type='text' placeholder='title' value={title} onChange={(event) => setTitle(event.target.value)}/>
-        </div>
-        <div>
-          <p>Description</p>
-          <input type='text' placeholder='description' value={description} onChange={(event) => setDescription(event.target.value)}/>
-        </div>
-        <div>
-          <p>Deadline</p>
-          <input type='date' placeholder='YYYY-MM-DD' value={deadline} onChange={(event) => setDeadline(event.target.value)}/>
-        </div>
-        <div id='submit'>
-          <button>
-            ADD TODO
-          </button>
-        </div>
-      </form>
-        </>
-    )
+    <form onSubmit={addTodo} className='todo-form'>
+      <div>
+        <p>TODO ID</p>
+        <input ref={idRef}          placeholder='ID' />
+      </div>
+      <div>
+        <p>Title</p>
+        <input ref={titleRef}       placeholder='Title' />
+      </div>
+      <div>
+        <p>Description</p>
+        <input ref={descriptionRef} placeholder='Description' />
+      </div>
+      <div>
+        <p>Deadline</p>
+        <input ref={deadlineRef}    type='date'/>
+      </div>
+      <div id='submit'>
+        <button type='submit'>ADD TODO</button>
+      </div>
+    </form>
+  );
 }
 
 export default Form

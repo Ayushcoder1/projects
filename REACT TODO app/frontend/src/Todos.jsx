@@ -3,11 +3,13 @@ import TODO from './components/TODO'
 import Form from './components/Form'
 import Card from './components/Card'
 import { Link } from 'react-router-dom';
+import Edit from './EditPage.jsx'
 
 var token = localStorage.getItem('token');
 
 function Todos() {
   let [todos , setTodos] = useState([]);
+  let [editMode, setEditMode] = useState(null);
 
   const get_data = async function(){
     if(token === null){
@@ -48,6 +50,10 @@ function Todos() {
     get_data();
   };
 
+  const EditModeOn = function(todo){
+    // console.log(todo);
+    setEditMode(todo);
+  }
   useEffect(() => {
     get_data();
     // const intervalId = setInterval(get_data, 1000);
@@ -65,9 +71,15 @@ function Todos() {
         return <Card  key={todo.id}>
           <TODO todo={todo}
               onToggle = {() => toggleDone(todo.id)}
-              onDelete = {() => deleteTodo(todo.id)}></TODO>
+              onDelete = {() => deleteTodo(todo.id)}
+              onEdit = {() => EditModeOn(todo)}></TODO>
         </Card>
       })}
+
+      {editMode && (
+        <Edit todo={editMode} setEditMode={setEditMode}
+        get_data={get_data} token={token}></Edit>
+      )}
     </div>
     </>
   )
