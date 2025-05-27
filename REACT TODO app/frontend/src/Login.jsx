@@ -3,29 +3,19 @@ import todoImg from './assets/todo.png';
 import './Login.css'
 import Card from './components/Card'
 import { useNavigate, Link } from 'react-router-dom';
+import { session_Atom } from './store/atoms';
+import { useAtom, useSetAtom } from 'jotai'
 
 function Login(){
     const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('')
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const server = useSetAtom(session_Atom);
 
-    const session = async function(){
-        // console.log(username, password);
-        const res = await fetch('http://localhost:3000/login', {
-            method : 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body : JSON.stringify({username, password})
-        });
-        // console.log(res);
-        const data = await res.json();
-        // console.log(data.token);
-        if(res.status == 200){
-            localStorage.setItem('token', data.token);
-            // window.location.replace('/todos');
-            navigate('/todos');
-        }
+    const session = function(){
+        server({ username, password });
+        navigate('/todos');
     }
-
     return (
         <>
         <div id='outer_login'>

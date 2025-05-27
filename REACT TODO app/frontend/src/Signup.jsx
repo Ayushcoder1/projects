@@ -2,27 +2,19 @@ import { useState, useEffect } from 'react';
 import todoImg from './assets/todo.png';
 import Card from './components/Card'
 import { useNavigate, Link } from 'react-router-dom';
+import { session_Atom } from './store/atoms';
+import { useAtom, useSetAtom } from 'jotai'
 
 function Signup(){
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('')
     const navigate = useNavigate();
+    const server = useSetAtom(session_Atom);
 
-    const session = async function(){
-        // console.log(username, password);
-        const res = await fetch('http://localhost:3000/signup', {
-            method : 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body : JSON.stringify({name, username, password})
-        });
-        // console.log(res);
-        const data = await res.json();
-        // console.log(data.token);
-        if(res.status == 200){
-            // window.location.replace('/login');
-            navigate('/');
-        }
+    const session = function(){
+        server({ username, password, name });
+        navigate('/todos');
     }
 
     return (

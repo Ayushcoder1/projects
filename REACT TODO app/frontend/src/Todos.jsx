@@ -1,95 +1,63 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import TODO from './components/TODO'
 import Form from './components/Form'
 import Card from './components/Card'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 import Edit from './EditPage.jsx'
-
-var token = localStorage.getItem('token');
+import { todosAtom, editModeAtom, tokenAtom, get_data_Atom } from './store/atoms.jsx'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 function Todos() {
-  let [todos , setTodos] = useState([]);
-  let [editMode, setEditMode] = useState(null);
+  const [todos , setTodos] = useAtom(todosAtom);
+  const [editMode, setEditMode] = useAtom(editModeAtom);
+  const get_data = useSetAtom(get_data_Atom);
+  const setToken = useSetAtom(tokenAtom);
 
-  const get_data = async function(){
-    if(token === null){
-      return;
-    }
-    let res = await fetch('http://localhost:3000/todos', {
-      method : 'GET',
-      headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
-      },
-    });
-    res = await res.json();
-    setTodos(res);
-  }
-
-  const toggleDone = async (todoId) => {
-    await fetch('http://localhost:3000/done', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-        'id': todoId
-      }
-    });
-    get_data();
-  };
-
-  const deleteTodo = async (todoId) => {
-    await fetch('http://localhost:3000/delete', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-        'id': todoId
-      }
-    });
-    get_data();
-  };
-
-  const EditModeOn = function(todo){
-    // console.log(todo);
-    setEditMode(todo);
-  }
   useEffect(() => {
     get_data();
-    // const intervalId = setInterval(get_data, 1000);
-    // return () => clearInterval(intervalId);
+
+    return () => {
+      setTodos([]);
+      setToken(null);
+      setEditMode(null);
+      get_data();
+    };
   }, []);
 
+  const changeStatus = () => {
+    localStorage.removeItem('token');
+    setTodos([]);
+    setToken(null);
+    setEditMode(null);
+    get_data();
+  }
   return (
     <>
     <div id='outer_app'>
-      <Navbar></Navbar>
+      <Navbar changeStatus={changeStatus}></Navbar>
       <Card>
-        <Form token={token} get_data={get_data}></Form>
+        <Form />
       </Card>
       {todos.map(function(todo){
+        // console.log(todo);
         return <Card  key={todo.id}>
-          <TODO todo={todo}
-              onToggle = {() => toggleDone(todo.id)}
-              onDelete = {() => deleteTodo(todo.id)}
-              onEdit = {() => EditModeOn(todo)}></TODO>
+          <TODO todo={todo}/>
         </Card>
       })}
 
       {editMode && (
-        <Edit todo={editMode} setEditMode={setEditMode}
-        get_data={get_data} token={token}></Edit>
+        <Edit />
       )}
     </div>
     </>
   )
 }
 
-function Navbar(){
+function Navbar({changeStatus}){
   return (
     <nav className='navbar'>
       <h1>TODO APP</h1>
-      <Link to="/">Log out</Link>
+      <Link to="/" onClick={changeStatus}>Log out</Link>
     </nav>
   )
 }

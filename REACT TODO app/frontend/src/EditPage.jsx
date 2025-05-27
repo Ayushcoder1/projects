@@ -1,18 +1,22 @@
 import React, { useEffect, useRef } from 'react';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { tokenAtom, editModeAtom, get_data_Atom } from './store/atoms.jsx'
 
-function Edit(param){
-    const token = param.token;
+function Edit(){
     const idRef = useRef();
     const titleRef = useRef();
     const descriptionRef = useRef();
     const deadlineRef = useRef();
     const StatusRef = useRef();
+    const token = useAtomValue(tokenAtom);
+    const [editMode, setEditMode] = useAtom(editModeAtom);
+    const get_data = useSetAtom(get_data_Atom)
 
     useEffect(() => {
-        titleRef.current.value = param.todo.title;
-        descriptionRef.current.value = param.todo.description;
-        deadlineRef.current.value = new Date(param.todo.deadline).toLocaleDateString('en-CA');
-        StatusRef.current.value = param.todo.Status;
+        titleRef.current.value = editMode.title;
+        descriptionRef.current.value = editMode.description;
+        deadlineRef.current.value = new Date(editMode.deadline).toLocaleDateString('en-CA');
+        StatusRef.current.value = editMode.Status;
     },[]);
 
     async function editTODO(event){
@@ -21,7 +25,7 @@ function Edit(param){
             return;
         }
         event.preventDefault();
-        const id = param.todo.id;
+        const id = editMode.id;
         const Status = StatusRef.current.value == 'true' ? true : false;
         const title = titleRef.current.value;
         const description = descriptionRef.current.value;
@@ -39,23 +43,19 @@ function Edit(param){
             console.log('A todo with similar ID already exits, try again.');
             return;
         }
-        // idRef.current.value = '';
-        // titleRef.current.value = '';
-        // descriptionRef.current.value = '';
-        // deadlineRef.current.value = '';
-        param.setEditMode(null);
-        param.get_data();
+        setEditMode(null);
+        get_data();
     }
 
     const cancelEdit = function(){
-        param.setEditMode(null);
+        setEditMode(null);
     }
     return (
         <div className='modal'>
             <form className='edit-form'>
                 <div>
                     <p>TODO ID</p>
-                    <p>{param.todo.id}</p>
+                    <input type="text" placeholder={editMode.id} disabled/>
                 </div>
                 <div>
                     <p>Title</p>

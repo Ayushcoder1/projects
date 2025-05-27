@@ -1,17 +1,14 @@
 import { useRef } from 'react';
+import {  useSetAtom } from 'jotai'
+import {  add_todo_Atom } from '../store/atoms.jsx'
 
-function Form(param){
-    const token = param.token;
+function Form(){
     const idRef = useRef();
     const titleRef = useRef();
     const descriptionRef = useRef();
     const deadlineRef = useRef();
-
-    async function addTodo(event){
-        if(token === null){
-          alert('log in please');
-          return;
-        }
+    const addTODO = useSetAtom(add_todo_Atom);
+    function addTodo(event){
         event.preventDefault();
         let Status = false;
         const id = idRef.current.value;
@@ -19,23 +16,11 @@ function Form(param){
         const description = descriptionRef.current.value;
         const deadline = new Date(deadlineRef.current.value).getTime();
         const content = {id, title, description, Status, deadline};
-        const res = await fetch('http://localhost:3000/add', {
-          method : 'POST',
-          headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-          },
-          body: JSON.stringify(content)
-        });
-        if(res.status != 200){
-          console.log('A todo with similar ID already exits, try again.');
-          return;
-        }
+        addTODO(content);
         idRef.current.value = '';
         titleRef.current.value = '';
         descriptionRef.current.value = '';
         deadlineRef.current.value = '';
-        param.get_data();
     }
 
     return (

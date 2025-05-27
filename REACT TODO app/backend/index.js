@@ -93,7 +93,8 @@ app.post('/signup',validator, async function(req, res){
     // });
     user.save();
     // newList.save();
-    res.status(200).json({msg : "User created successfully!"});
+    var token = jwt.sign({username: username}, passKey);
+    return res.status(200).json({token : token});
 });
 
 app.post('/login', async function(req, res){
