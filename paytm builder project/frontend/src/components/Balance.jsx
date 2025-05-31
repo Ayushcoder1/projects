@@ -4,7 +4,7 @@ function Balance(){
             <h1 className="font-semibold text-lg mb-2">Wallet Balance</h1>
             <h1 className="font-bold text-black text-3xl mb-4">$250</h1>
 
-            <p className="text-lg text-blue-800 italic font-bold">Manage Balance</p>
+            <p className="text-lg text-blue-800 italic font-bold hover:cursor-pointer">Manage Balance</p>
         </div>
     )
 }

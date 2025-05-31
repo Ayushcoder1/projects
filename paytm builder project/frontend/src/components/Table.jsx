@@ -1,10 +1,9 @@
 function Table(){
     const arr = [["User 1", "-$200", "Success"], ["User 2", "-$150", "Success"],
                 ["User 3", "+$300", "Failed"], ["User 1", "+$400", "Success"]];
-    let col = "red";
     return (
         <div>
-            <div className="grid grid-cols-3 p-4 rounded-sm shadow-sm text-zinc-400 font-bold">
+            <div className="grid grid-cols-3 p-4 rounded-sm shadow-sm text-black text-xl font-bold">
                 <p>Name</p>
                 <p>Amount</p>
                 <p>Status</p>
@@ -21,8 +20,8 @@ function Table(){
                         </div>
                         <div className="font-semibold text-lg">
                             {item[2] === "Success" ? 
-                                <span className="text-green-500">{item[2]}</span> : 
-                                <span className="text-red-500">{item[2]}</span>
+                                <span className="bg-green-500 p-3 rounded-full text-white">{item[2]}</span> : 
+                                <span className="bg-red-500 p-3 rounded-full text-white">{item[2]}</span>
                             }
                         </div>
                     </div>
