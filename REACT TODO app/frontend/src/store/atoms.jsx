@@ -4,7 +4,7 @@ export const todosAtom = atom([]);
 
 export const editModeAtom = atom(null);
 
-export const tokenAtom = atom(localStorage.getItem('token') || null);
+export const tokenAtom = atom(sessionStorage.getItem('token') || null);
 
 export const get_data_Atom = atom(
   (get) => get(todosAtom),
@@ -52,7 +52,7 @@ export const add_todo_Atom = atom(
 
 export const toggle_todo_Atom = atom(
   null,
-  async (get, set, todoId) => {
+  async (get, set, todoId, status) => {
     const token = get(tokenAtom);
     if (token === null) {
       alert('log in please');
@@ -64,6 +64,7 @@ export const toggle_todo_Atom = atom(
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
         'id': todoId,
+        'status' : status === true ? 'true' : 'false',
       },
     });
     set(get_data_Atom);
@@ -94,6 +95,7 @@ export const session_Atom = atom(
   null,
   async (get, set, { username, password, name=null }) => {
     const path = name ? 'signup' : 'login';
+    // console.log('here', { username, password, name });
     const res = await fetch(`http://localhost:3000/${path}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -101,7 +103,7 @@ export const session_Atom = atom(
     });
     const data = await res.json();
     if (res.status === 200) {
-      localStorage.setItem('token', data.token);
+      sessionStorage.setItem('token', data.token);
       set(tokenAtom, data.token);
       set(get_data_Atom);
     } else {
@@ -109,3 +111,20 @@ export const session_Atom = atom(
     }
   }
 );
+
+export const edit_todo_Atom = atom(
+  null,
+  async (get, set, content) => {
+    const token = get(tokenAtom);
+    const res = await fetch('http://localhost:3000/edit', {
+        method : 'PUT',
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(content)
+    });
+    set(get_data_Atom);
+    set(editModeAtom, null);
+  }
+)

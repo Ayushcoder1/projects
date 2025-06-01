@@ -25,7 +25,6 @@ function Todos() {
   }, []);
 
   const changeStatus = () => {
-    localStorage.removeItem('token');
     setTodos([]);
     setToken(null);
     setEditMode(null);
@@ -46,7 +45,11 @@ function Todos() {
       })}
 
       {editMode && (
-        <Edit />
+        <div className='fixed inset-0 bg-white flex items-center justify-center z-50'>
+          <div className='flex justify-center full-screen shadow-3xl'>
+            <Edit/>
+          </div>
+        </div>
       )}
     </div>
     </>
@@ -55,10 +58,10 @@ function Todos() {
 
 function Navbar({changeStatus}){
   return (
-    <nav className='navbar'>
-      <h1>TODO APP</h1>
-      <Link to="/" onClick={changeStatus}>Log out</Link>
-    </nav>
+    <div className='flex justify-between bg-blue-50 m-1 my-2 rounded-lg px-4 py-2 font-mono shadow-md'>
+      <h1 className='text-3xl font-semibold'>TODO APP</h1>
+      <Link to="/login" onClick={changeStatus} className='flex items-center text-lg hover:underline hover:cursor-pointer pr-4'>Log out</Link>
+    </div>
   )
 }
 

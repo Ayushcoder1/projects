@@ -59,12 +59,10 @@ function validator(req, res, next){
 
 function authMiddleware(req, res, next) {
   const auth = req.headers.authorization?.split(' ')[1];
-  // console.log(auth);
   if (!auth) return res.status(401).send('No token');
   try {
     const payload = jwt.verify(auth, passKey);
-    // console.log(payload);
-    req.user = payload.username;  // { email, id, iat, exp }
+    req.user = payload.username;
     next();
   } catch (err) {
     res.status(401).send('Invalid token');
@@ -179,7 +177,7 @@ app.put('/done', authMiddleware, async (req, res) => {
   const username = req.user;
   await TODO.updateOne(
     {username : username, "todos.id": id},
-    {$set : {"todos.$.Status" : true}}
+    {$set : {"todos.$.Status" : req.headers.status === 'true' ? true : false}}
   );
 
   return res.sendStatus(200);

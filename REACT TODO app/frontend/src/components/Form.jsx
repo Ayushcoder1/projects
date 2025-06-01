@@ -24,25 +24,25 @@ function Form(){
     }
 
     return (
-    <form onSubmit={addTodo} className='todo-form'>
-      <div>
-        <p>TODO ID</p>
-        <input ref={idRef}          placeholder='ID' />
+    <form onSubmit={addTodo} className=' bg-blue-50 rounded-lg shadow-lg px-10 py-5 m-1 items-center grid grid-cols-2 gap-4'>
+      <div className='flex justify-between font-mono'>
+        <p className='text-3xl font-semibold'>TODO ID</p>
+        <input ref={idRef}          placeholder='ID' className='border-2 w-80 p-2 rounded-sm bg-white text-xl'/>
       </div>
-      <div>
-        <p>Title</p>
-        <input ref={titleRef}       placeholder='Title' />
+      <div className='flex justify-between font-mono'>
+        <p className='text-3xl font-semibold'>Title</p>
+        <input ref={titleRef}       placeholder='Title' className='border-2 w-80 p-2 rounded-sm bg-white text-xl'/>
       </div>
-      <div>
-        <p>Description</p>
-        <input ref={descriptionRef} placeholder='Description' />
+      <div className='flex justify-between font-mono'>
+        <p className='text-3xl font-semibold'>Description</p>
+        <input ref={descriptionRef} placeholder='Description' className='border-2 w-80 p-2 rounded-sm bg-white text-xl'/>
       </div>
-      <div>
-        <p>Deadline</p>
-        <input ref={deadlineRef}    type='date'/>
+      <div className='flex justify-between font-mono'>
+        <p className='text-3xl font-semibold'>Deadline</p>
+        <input ref={deadlineRef}    type='date' className='border-2 w-80 p-2 rounded-sm bg-white text-xl'/>
       </div>
-      <div id='submit'>
-        <button type='submit'>ADD TODO</button>
+      <div className='col-span-2 flex justify-center mt-4'>
+        <button type='submit' className='p-4 bg-white rounded-xl text-2xl font-mono font-semibold'>ADD TODO</button>
       </div>
     </form>
   );
