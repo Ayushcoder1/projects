@@ -17,7 +17,7 @@ function Signin({isSignin}){
         const password = passwordRef.current.value;
         const name = nameRef.current ? nameRef.current.value : null;
         server({ username, password, name });
-        navigate('/todos');
+        navigate('/account/todos');
     }
     return (
         <div className='flex flex-col items-center'>
@@ -50,7 +50,7 @@ function Signin({isSignin}){
                 <div>
                     <button className='border-black border-2 w-80 rounded-full p-2 mb-2 text-white bg-green-500 text-lg font-bold' onClick={session}>{isSignin ? "Log in" : "Sign up"}</button>
                 </div>
-                <p className='text-center text-zinc-400 italic font-semibold'>{isSignin ? "New user?  " : "Already have an account?  "} <Link className='text-blue-400 underline' to={isSignin ? "/signup" : "/login"}>{isSignin ? "Sign up" : "Log in"}</Link></p>
+                <p className='text-center text-zinc-400 italic font-semibold'>{isSignin ? "New user?  " : "Already have an account?  "} <Link className='text-blue-400 underline' to={isSignin ? "/user/signup" : "/user/login"}>{isSignin ? "Sign up" : "Log in"}</Link></p>
             </div>
         </div>
     )
