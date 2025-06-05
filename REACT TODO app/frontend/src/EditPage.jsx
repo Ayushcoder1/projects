@@ -15,7 +15,7 @@ function Edit(){
     useEffect(() => {
         titleRef.current.value = editMode.title;
         descriptionRef.current.value = editMode.description;
-        deadlineRef.current.value = new Date(editMode.deadline).toLocaleDateString('en-CA');
+        deadlineRef.current.value = new Date(Number(editMode.deadline)).toLocaleDateString('en-CA');
         StatusRef.current.value = editMode.Status;
     },[]);
 

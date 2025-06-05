@@ -73,19 +73,20 @@ export const toggle_todo_Atom = atom(
 
 export const delete_todo_Atom = atom(
   null,
-  async (get, set, todoId) => {
+  async (get, set, id) => {
     const token = get(tokenAtom);
     if (token === null) {
       alert('log in please');
       return;
     }
+    // console.log(id);
     await fetch('http://localhost:3000/account/delete', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
-        'id': todoId,
       },
+      body: JSON.stringify({ id : id }),
     });
     set(get_data_Atom);
   }

@@ -17,7 +17,6 @@ function validator(req, res, next){
 
 function authMiddleware(req, res, next) {
   const auth = req.headers.authorization?.split(' ')[1];
-  // console.log('auth', auth);
   if (!auth) return res.status(401).send('No token');
   try {
     const payload = jwt.verify(auth, passKey);
