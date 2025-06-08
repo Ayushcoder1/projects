@@ -126,7 +126,7 @@ router.get('/todos', authMiddleware, async (req, res) => {
   `, [username]);
 
   // console.log(data);
-  if(data.row_length == 0) return res.json([])
+  if(data.rowCount == 0) return res.json([])
   const todos = data.rows.map(row => ({
     id: row.id,
     title: row.title,
@@ -137,5 +137,57 @@ router.get('/todos', authMiddleware, async (req, res) => {
   // console.log(todos);
   return res.json(todos);
 });
+
+function getsinceEpoch(dateStr){
+  const [day, month, year] = dateStr.split("-").map(Number);
+
+  // 2) Construct a Date object (month is 0-based)
+  const dateObj = new Date(year, month - 1, day);
+
+  // 3) Grab the millisecond timestamp
+  const msSinceEpoch = dateObj.getTime();
+
+  return msSinceEpoch;
+}
+
+router.post('/filter', authMiddleware, async(req, res) => {
+  const username = req.user;
+  const filter = req.body.filter;
+  const quantity =  req.body.quantity.toLowerCase();
+  let data;
+  // console.log(quantity);
+  // console.log(filter);
+  if(quantity != 'deadline'){
+    data = await client.query(`
+    SELECT * FROM todo
+    WHERE user_id = (SELECT id from users WHERE email = $1)
+    AND ${quantity} LIKE $2;
+  `,[username, `%${filter}%`]);
+  }
+  else{
+    let [ start, end ] = filter.split("to").map(str => str.trim());
+    start = getsinceEpoch(start);
+    end = getsinceEpoch(end);
+    
+    // console.log(start, end);
+
+    data = await client.query(`
+    SELECT * FROM todo
+    WHERE user_id = (SELECT id from users WHERE email = $1)
+    AND ${quantity} between $2 AND $3;
+  `,[username, start, end]);
+  }
+
+  if(data.rowCount == 0) return res.json([])
+  const todos = data.rows.map(row => ({
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    Status: row.status,
+    deadline: row.deadline
+  }));
+  // console.log(todos);
+  return res.json(todos);
+})
 
 module.exports = router;

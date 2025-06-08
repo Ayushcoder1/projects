@@ -2,6 +2,8 @@ import { atom } from 'jotai';
 
 export const todosAtom = atom([]);
 
+export const filteredAtom = atom([]);
+
 export const editModeAtom = atom(null);
 
 export const tokenAtom = atom(sessionStorage.getItem('token') || null);
@@ -127,5 +129,24 @@ export const edit_todo_Atom = atom(
     });
     set(get_data_Atom);
     set(editModeAtom, null);
+  }
+)
+
+export const fetch_filter_data_atom = atom(
+  null,
+  async (get, set, filter, quantity) => {
+    const token = get(tokenAtom);
+    // console.log(token);
+    const res = await fetch('http://localhost:3000/account/filter', {
+        method : 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({filter : filter, quantity : quantity})
+    });
+    const data = await res.json();
+    // console.log(data);
+    set(filteredAtom, data);
   }
 )
